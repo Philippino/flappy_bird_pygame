@@ -38,8 +38,11 @@ class Bird(object):
 	def __init__(self):
 		self.posY = size[1] / 2
 		self.velY = 0
-		self.image = load_image('img/bird.png')
-		self.image = pygame.transform.scale(self.image, (34, 24))
+        self.index = 0
+        self.assets = [load_image('img/bird.png'), load_image('img/bird_flap_1.png'), load_image('img/bird_flap_2.png')]
+        for i in range(len(self.assets)):
+            self.assets[i] = pygame.transform.scale(self.assets[i], (34, 24))
+        self.image = self.assets[self.index]
 
 	def move(self):
 		self.posY += self.velY
@@ -48,6 +51,12 @@ class Bird(object):
 
 	def rotate(self, angle):
 		self.image = pygame.transform.rotate(self.image, angle)
+
+    def flap(self):
+        self.velY -= 5
+        self.index += 1
+        self.image = self.assets[self.index]
+        #self.image = self.assets[0]
 
 	def draw(self):
 		screen.blit(self.image, [100,self.posY])
@@ -115,7 +124,7 @@ def main_loop():
             if event.type == pygame.QUIT: # close event
                 done = True
             if event.type == pygame.MOUSEBUTTONDOWN: #mouseclick
-                bird.velY -= 5
+                bird.flap()
 
         while pause == True:
             paused()
