@@ -23,6 +23,8 @@ def load_image(name):
     return image
 #game standby
 done = False
+#set fonts
+font = pygame.font.Font(None, 18)
 
 #classes
 class Bird(object):
