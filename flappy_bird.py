@@ -28,7 +28,7 @@ done = False
 score = 0
 
 #set fonts
-font = pygame.font.Font(None, 18)
+font = pygame.font.Font(None, 24)
 
 #classes
 
