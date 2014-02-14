@@ -22,7 +22,10 @@ def load_image(name):
     image = pygame.image.load(name)
     return image
 #game standby
+pause = False
 done = False
+score = 0
+
 #set fonts
 font = pygame.font.Font(None, 18)
 
@@ -67,12 +70,25 @@ clock = pygame.time.Clock()
 
 # -------- Main Program Loop -----------
 while not done:
+while not done and pause == False:
     # --- Main event loop
     for event in pygame.event.get():
+        if event.type is pygame.KEYDOWN:
+            _ = pygame.key.name(event.key);
+            if _ == 'p':
+                  pause = True
         if event.type == pygame.QUIT: # close event
             done = True
         if event.type == pygame.MOUSEBUTTONDOWN: #mouseclick
             bird.velY -= 5;
+    while pause == True:
+        for event in pygame.event.get():
+            if event.type is pygame.KEYDOWN:
+                _ = pygame.key.name(event.key);
+                if _ == 'p':
+                    pause = False
+            if event.type == pygame.QUIT: # close event
+                done = True
 
     #moving characters
     bird.move()
@@ -88,6 +104,9 @@ while not done:
     		done = True
     	elif pipe.posX in range(68, 132) and bird.posY > pipe.gate_posY + 108:
     		done = True
+        if pipe.posX == 68:
+            score += 1
+
 
     # draw
     screen.fill(black) 
@@ -103,11 +122,30 @@ while not done:
     for pipe in pipes:
     	pipe.draw()
 
+    #GUI
+    if pause == True:
+        text = font.render("PAUSE", True, white)
+        screen.blit(text, [ size[0] / 2, size[1] / 2])
+
+    #score    
+    text = font.render("Your score: " + str(score), True, white)
+    screen.blit(text, [ 500, 50]) 
     #screen update
     pygame.display.flip()
 
     #framerate
     clock.tick(60)
+
+#show score
+def final():
+    pause = True
+    while pause == True:
+        text = font.render("Bird has crashed. Your final score: " + str(score), True, white)
+        screen.blit(text, [ size[0] / 2, size[1] / 2])
+        pygame.display.flip()
+        for event in pygame.event.get():
+            if event.type is pygame.KEYDOWN or event.type == pygame.QUIT or event.type == pygame.MOUSEBUTTONDOWN:
+                pause = False
 
 #on close
 pygame.quit()
