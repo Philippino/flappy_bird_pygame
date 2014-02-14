@@ -39,7 +39,7 @@ class Bird(object):
 		self.posY = size[1] / 2
 		self.velY = 0
         self.index = 0
-        self.assets = [load_image('img/bird.png'), load_image('img/bird_flap_1.png'), load_image('img/bird_flap_2.png')]
+        self.assets = [load_image('img/bird.png'), load_image('img/bird_flap_1.png'), load_image('img/bird_flap_2.png'), load_image('img/bird_flap_1.png'),load_image('img/bird.png')]
         for i in range(len(self.assets)):
             self.assets[i] = pygame.transform.scale(self.assets[i], (34, 24))
         self.image = self.assets[self.index]
@@ -53,33 +53,31 @@ class Bird(object):
 		self.image = pygame.transform.rotate(self.image, angle)
 
     def flap(self):
-        self.velY -= 5
-        self.index += 1
-        self.image = self.assets[self.index]
-        #self.image = self.assets[0]
+        self.index = 4
 
 	def draw(self):
+        self.image = self.assets[self.index]
 		screen.blit(self.image, [100,self.posY])
 
 #clas Pipe
 class Pipe(object):
 	def __init__(self, posX):
 		self.posX = posX
-		self.gate_posY = random.randint(100,300)
+		self.gate_posY = random.randint(50,350)
 
 	def move(self):
-		self.posX -= 2
+		self.posX -= 4
 		if self.posX <= - 120:
-			self.posX = 720
-			self.gate_posY = random.randint(100,300)
+			self.posX = 960
+			self.gate_posY = random.randint(50,350)
 
 	def draw(self):
-		pygame.draw.rect(screen, green, [self.posX, 0, 62, self.gate_posY], 0)
-		pygame.draw.rect(screen, green, [self.posX, self.gate_posY + 124, 62, size[1] - self.gate_posY], 0)
+		pygame.draw.rect(screen, green, [self.posX, 0, 60, self.gate_posY], 0)
+		pygame.draw.rect(screen, green, [self.posX, self.gate_posY + 124, 60, size[1] - self.gate_posY], 0)
 
 #init classes
 bird = Bird()
-pipes = (Pipe(720), Pipe(1040), Pipe(1360))
+pipes = (Pipe(640), Pipe(960), Pipe(1280))
 
 #framerate control
 clock = pygame.time.Clock()
@@ -124,6 +122,7 @@ def main_loop():
             if event.type == pygame.QUIT: # close event
                 done = True
             if event.type == pygame.MOUSEBUTTONDOWN: #mouseclick
+                bird.velY -= 5
                 bird.flap()
 
         while pause == True:
@@ -158,6 +157,8 @@ def main_loop():
         pygame.draw.rect(screen, sandy, [0, 360, 640, 120], 0)
 
         #bird
+        if bird.index != 0:
+            bird.index -= 1
         bird.draw()
 
         #pipes
