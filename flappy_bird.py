@@ -21,6 +21,7 @@ pygame.display.set_caption("Flappy Bird")
 def load_image(name):
     image = pygame.image.load(name)
     return image
+
 #game standby
 pause = False
 done = False
@@ -30,6 +31,8 @@ score = 0
 font = pygame.font.Font(None, 18)
 
 #classes
+
+#class Bird
 class Bird(object):
 
 	def __init__(self):
@@ -41,11 +44,15 @@ class Bird(object):
 	def move(self):
 		self.posY += self.velY
 		self.velY += 0.1
+		#self.rotate(0.1)
+
+	def rotate(self, angle):
+		self.image = pygame.transform.rotate(self.image, angle)
 
 	def draw(self):
 		screen.blit(self.image, [100,self.posY])
-		#pygame.draw.rect(screen, yellow, [100, self.posY, 32,16], 0) 
 
+#clas Pipe
 class Pipe(object):
 	def __init__(self, posX):
 		self.posX = posX
@@ -63,81 +70,14 @@ class Pipe(object):
 
 #init classes
 bird = Bird()
-pipes = ( Pipe(720),Pipe(1040),Pipe(1360))
+pipes = (Pipe(720), Pipe(1040), Pipe(1360))
 
 #framerate control
 clock = pygame.time.Clock()
 
-# -------- Main Program Loop -----------
-while not done:
-while not done and pause == False:
-    # --- Main event loop
-    for event in pygame.event.get():
-        if event.type is pygame.KEYDOWN:
-            _ = pygame.key.name(event.key);
-            if _ == 'p':
-                  pause = True
-        if event.type == pygame.QUIT: # close event
-            done = True
-        if event.type == pygame.MOUSEBUTTONDOWN: #mouseclick
-            bird.velY -= 5;
-    while pause == True:
-        for event in pygame.event.get():
-            if event.type is pygame.KEYDOWN:
-                _ = pygame.key.name(event.key);
-                if _ == 'p':
-                    pause = False
-            if event.type == pygame.QUIT: # close event
-                done = True
-
-    #moving characters
-    bird.move()
-
-    #bird is off the screen
-    if bird.posY > 480 or bird.posY < -16:
-    	done = True
-
-    # collision
-    for pipe in pipes:
-    	pipe.move()
-    	if pipe.posX in range (68, 132) and bird.posY < pipe.gate_posY:
-    		done = True
-    	elif pipe.posX in range(68, 132) and bird.posY > pipe.gate_posY + 108:
-    		done = True
-        if pipe.posX == 68:
-            score += 1
-
-
-    # draw
-    screen.fill(black) 
-
-    #background
-    pygame.draw.rect(screen, sky_blue, [0, 0, 640, 480], 0)
-    pygame.draw.rect(screen, sandy, [0, 360, 640, 120], 0)
-
-    #bird
-    bird.draw()
-
-    #pipes
-    for pipe in pipes:
-    	pipe.draw()
-
-    #GUI
-    if pause == True:
-        text = font.render("PAUSE", True, white)
-        screen.blit(text, [ size[0] / 2, size[1] / 2])
-
-    #score    
-    text = font.render("Your score: " + str(score), True, white)
-    screen.blit(text, [ 500, 50]) 
-    #screen update
-    pygame.display.flip()
-
-    #framerate
-    clock.tick(60)
-
-#show score
+#show score on end
 def final():
+    global pause, done, score
     pause = True
     while pause == True:
         text = font.render("Bird has crashed. Your final score: " + str(score), True, white)
@@ -147,5 +87,83 @@ def final():
             if event.type is pygame.KEYDOWN or event.type == pygame.QUIT or event.type == pygame.MOUSEBUTTONDOWN:
                 pause = False
 
+#pause loop
+def paused():
+    global pause, done
+    for event in pygame.event.get():
+        if event.type is pygame.KEYDOWN:
+            _ = pygame.key.name(event.key);
+            if _ == 'space':
+                pause = False
+            if event.type == pygame.QUIT: # close event
+                pause = False
+                done = True
+
+    text = font.render("PAUSE", True, white)
+    screen.blit(text, [ size[0] / 2, size[1] / 2])
+    pygame.display.flip()
+
+#main game loop
+def main_loop():
+    global done, pause, score
+    while not done:
+        for event in pygame.event.get():
+            if event.type is pygame.KEYDOWN:
+                _ = pygame.key.name(event.key);
+                if _ == 'space':
+                    pause = True
+            if event.type == pygame.QUIT: # close event
+                done = True
+            if event.type == pygame.MOUSEBUTTONDOWN: #mouseclick
+                bird.velY -= 5
+
+        while pause == True:
+            paused()
+
+        #moving characters
+        bird.move()
+
+        #bird is off the screen
+        if bird.posY > 480 or bird.posY < -16:
+    	   done = True
+           final()
+
+        # collision
+        for pipe in pipes:
+    	    pipe.move()
+    	    if pipe.posX in range (68, 132) and bird.posY <= pipe.gate_posY:
+    	        done = True
+                final()
+    	    elif pipe.posX in range(68, 132) and bird.posY >= pipe.gate_posY + 108:
+                done = True
+                final()
+            if pipe.posX == 68:
+                score += 1
+
+
+        # draw
+        screen.fill(black) 
+
+        #background
+        pygame.draw.rect(screen, sky_blue, [0, 0, 640, 480], 0)
+        pygame.draw.rect(screen, sandy, [0, 360, 640, 120], 0)
+
+        #bird
+        bird.draw()
+
+        #pipes
+        for pipe in pipes:
+    	   pipe.draw()
+
+        #score    
+        text = font.render("Your score: " + str(score), True, white)
+        screen.blit(text, [ 500, 50]) 
+        #screen update
+        pygame.display.flip()
+
+        #framerate
+        clock.tick(60)
+
+main_loop()
 #on close
 pygame.quit()
