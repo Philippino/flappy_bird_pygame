@@ -10,6 +10,7 @@ green = (0, 255, 0)
 sandy = (212, 181, 129)
 yellow = (250, 200, 0)
 sky_blue = (135, 206, 235)
+white = (255, 255, 255)
 
 #define a screen
 size = [640, 480]
