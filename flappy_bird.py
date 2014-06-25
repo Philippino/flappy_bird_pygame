@@ -34,30 +34,30 @@ font = pygame.font.Font(None, 24)
 
 #class Bird
 class Bird(object):
-
-	def __init__(self):
-		self.posY = size[1] / 2
-		self.velY = 0
+    
+    def __init__(self):
+        self.posY = size[1] / 2
+        self.velY = 0
         self.index = 0
         self.assets = [load_image('img/bird.png'), load_image('img/bird_flap_1.png'), load_image('img/bird_flap_2.png'), load_image('img/bird_flap_1.png'),load_image('img/bird.png')]
         for i in range(len(self.assets)):
             self.assets[i] = pygame.transform.scale(self.assets[i], (34, 24))
         self.image = self.assets[self.index]
 
-	def move(self):
-		self.posY += self.velY
-		self.velY += 0.1
-		#self.rotate(0.1)
+    def move(self):
+        self.posY += self.velY
+        self.velY += 0.1
+        #self.rotate(0.1)
 
-	def rotate(self, angle):
-		self.image = pygame.transform.rotate(self.image, angle)
+    def rotate(self, angle):
+        self.image = pygame.transform.rotate(self.image, angle)
 
     def flap(self):
         self.index = 4
-
-	def draw(self):
+        
+    def draw(self):
         self.image = self.assets[self.index]
-		screen.blit(self.image, [100,self.posY])
+        screen.blit(self.image, [100,self.posY])
 
 #clas Pipe
 class Pipe(object):
@@ -88,7 +88,7 @@ def final():
     pause = True
     while pause == True:
         text = font.render("Bird has crashed. Your final score: " + str(score), True, white)
-        screen.blit(text, [ size[0] / 2, size[1] / 2])
+        screen.blit(text, [size[0] / 2, size[1] / 2])
         pygame.display.flip()
         for event in pygame.event.get():
             if event.type is pygame.KEYDOWN or event.type == pygame.QUIT or event.type == pygame.MOUSEBUTTONDOWN:
